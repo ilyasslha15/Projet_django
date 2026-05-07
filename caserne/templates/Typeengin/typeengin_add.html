@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>➕ Ajouter Type Engin</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+    <!--Django génère ça automatiquement :-->
+    <!--<input type="hidden" name="csrfmiddlewaretoken" value="aZ3kP9xQ...">-->
+        {{ form.as_p }}
+        <!--affiche tous les champs du formulaire automatiquement entourés de balises p-->
+        <button type="submit" class="btn btn-danger">
+            Enregistrer
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

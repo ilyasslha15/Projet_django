@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block page_title %}Interventions{% endblock %}
+{% block content %}
+<div class="table-wrap">
+    <div class="table-hdr">
+        <div class="table-title"><i class="bi bi-lightning-charge" style="color:#e63946"></i> Liste des Interventions</div>
+        {% if user.is_staff %}<a href="/caserne/add_intervention/" class="btn-red"><i class="bi bi-plus"></i> Ajouter</a>{% endif %}
+    </div>
+    <!-- Filtres -->
+    <div style="padding:12px 18px;border-bottom:1px solid var(--border,rgba(255,255,255,0.08));display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <form method="GET" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <input type="date" name="date" value="{{ request.GET.date }}" class="form-control" style="width:160px;font-size:13px">
+            <select name="type_sinistre" class="form-select" style="width:180px;font-size:13px">
+                <option value="">Tous les types</option>
+                <option value="Incendie" {% if request.GET.type_sinistre == "Incendie" %}selected{% endif %}>🔥 Incendie</option>
+                <option value="Secours à personne" {% if request.GET.type_sinistre == "Secours à personne" %}selected{% endif %}>🏥 Secours</option>
+                <option value="Accident" {% if request.GET.type_sinistre == "Accident" %}selected{% endif %}>🚗 Accident</option>
+            </select>
+            <button type="submit" class="btn-red" style="padding:6px 14px"><i class="bi bi-funnel"></i> Filtrer</button>
+            {% if request.GET.date or request.GET.type_sinistre %}<a href="{% url 'list_intervention' %}" class="btn-ghost" style="padding:6px 12px;font-size:13px">Réinitialiser</a>{% endif %}
+        </form>
+        <span style="margin-left:auto;font-size:12px;color:#666">{{ interventions|length }} intervention(s)</span>
+    </div>
+    <table class="dt">
+        <thead><tr><th>N° Rapport</th><th>Type</th><th>Adresse</th><th>Date</th><th>Durée</th><th>Véhicules</th><th>Actions</th></tr></thead>
+        <tbody>
+        {% for v in interventions %}
+        <tr>
+            <td style="font-weight:600;color:#fff">{{ v.numero_rapport }}</td>
+            <td>
+                {% if v.type_sinistre == "Incendie" %}<span class="s-inter">🔥 Incendie</span>
+                {% elif v.type_sinistre == "Accident" %}<span class="s-indispo">🚗 Accident</span>
+                {% else %}<span class="s-dispo">🏥 Secours</span>{% endif %}
+            </td>
+            <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="{{ v.adresse }}">{{ v.adresse }}</td>
+            <td>{{ v.date_appel|date:"d/m/Y H:i" }}</td>
+            <td>{{ v.duree }} min</td>
+            <td style="font-size:12px;color:#888">{{ v.vehicules.count }} véh.</td>
+            <td>
+                {% if user.is_staff %}
+                <a href="/caserne/Intervention_edit/{{ v.id }}/" class="btn-edit"><i class="bi bi-pencil"></i> Modifier</a>
+                <a href="/caserne/Intervention_delete/{{ v.id }}/" class="btn-del" onclick="return confirm('Supprimer cette intervention ?')"><i class="bi bi-trash"></i> Supprimer</a>
+                {% else %}<span style="color:#444;font-size:12px">Lecture seule</span>{% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" style="text-align:center;color:#555;padding:28px">Aucune intervention trouvée</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

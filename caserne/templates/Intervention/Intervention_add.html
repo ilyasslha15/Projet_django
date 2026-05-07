@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+<h2>➕ Ajouter Intervention</h2>
+
+{% if form.vehicules.errors %}
+<div id="msg-error" class="alert alert-danger">
+    {{ form.vehicules.errors }}
+</div>
+{% endif %}
+
+<form method="POST">
+    {% csrf_token %}
+
+    <p>{{ form.numero_rapport.label_tag }} {{ form.numero_rapport }}</p>
+    <p>{{ form.type_sinistre.label_tag }} {{ form.type_sinistre }}</p>
+    <p>{{ form.adresse.label_tag }} {{ form.adresse }}</p>
+    <p>{{ form.date_appel.label_tag }} {{ form.date_appel }}</p>
+    <p>{{ form.duree.label_tag }} {{ form.duree }}</p>
+    <p>{{ form.vehicules.label_tag }} {{ form.vehicules }}</p>
+
+    <button type="submit" class="btn btn-danger">
+        Enregistrer
+    </button>
+</form>
+
+</div>
+
+<script>
+setTimeout(function(){
+    let msg=document.getElementById("msg-error");
+    if(msg){
+        msg.remove();
+    }
+  },5000);
+  //Supprimer le message après 5 secondes
+</script>
+
+{% endblock %}

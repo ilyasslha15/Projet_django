@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block page_title %}Matériel{% endblock %}
+{% block content %}
+<div class="table-wrap">
+    <div class="table-hdr">
+        <div class="table-title"><i class="bi bi-tools" style="color:#e63946"></i> Liste du Matériel</div>
+        {% if user.is_staff %}<a href="/caserne/materiel_add/" class="btn-red"><i class="bi bi-plus"></i> Ajouter</a>{% endif %}
+    </div>
+    <table class="dt">
+        <thead><tr><th>Nom</th><th>Quantité</th><th>Date révision</th><th>État</th><th>Actions</th></tr></thead>
+        <tbody>
+        {% for m in materiels %}
+        <tr>
+            <td style="font-weight:600;color:#fff">{{ m.nom }}</td>
+            <td>{{ m.quantite }}</td>
+            <td>{{ m.date_revision }}</td>
+            <td>
+                {% if m.date_revision < today %}
+                    <span class="s-expired"><i class="bi bi-exclamation-triangle"></i> Révision dépassée</span>
+                {% else %}
+                    <span class="s-ok"><i class="bi bi-check"></i> À jour</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if user.is_staff %}
+                <a href="/caserne/materiel_edit/{{ m.id }}" class="btn-edit"><i class="bi bi-pencil"></i> Modifier</a>
+                <a href="/caserne/materiel_delete/{{ m.id }}" class="btn-del" onclick="return confirm('Supprimer ce matériel ?')"><i class="bi bi-trash"></i> Supprimer</a>
+                {% else %}<span style="color:#444;font-size:12px">Lecture seule</span>{% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" style="text-align:center;color:#555;padding:28px">Aucun matériel trouvé</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card" style="--accent:#3b82f6">
+            <div class="stat-icon" style="background:rgba(59,130,246,.15);color:#3b82f6">🚒</div>
+            <div class="stat-value">{{ vehicules_total }}</div>
+            <div class="stat-label">Véhicules total</div>
+            <div class="stat-sub" style="color:#6ee7b7"><i class="bi bi-check-circle"></i> {{ vehicules_dispo }} disponibles</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="--accent:#e63946">
+            <div class="stat-icon" style="background:rgba(230,57,70,.15);color:#e63946">🚨</div>
+            <div class="stat-value">{{ interventions }}</div>
+            <div class="stat-label">Interventions</div>
+            <div class="stat-sub" style="color:#f87171"><i class="bi bi-arrow-up-right"></i> Total enregistrées</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="--accent:#f59e0b">
+            <div class="stat-icon" style="background:rgba(245,158,11,.15);color:#f59e0b">🧯</div>
+            <div class="stat-value">{{ materiels }}</div>
+            <div class="stat-label">Équipements</div>
+            {% if alertes_materiel %}
+            <div class="stat-sub" style="color:#fbbf24"><i class="bi bi-exclamation-triangle"></i> {{ alertes_materiel }} révision requise</div>
+            {% else %}
+            <div class="stat-sub" style="color:#6ee7b7"><i class="bi bi-check-circle"></i> Tous à jour</div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="--accent:#8b5cf6">
+            <div class="stat-icon" style="background:rgba(139,92,246,.15);color:#8b5cf6">🏷️</div>
+            <div class="stat-value">{{ types_engins }}</div>
+            <div class="stat-label">Types d'engins</div>
+            <div class="stat-sub" style="color:#a78bfa"><i class="bi bi-layers"></i> Catégories actives</div>
+        </div>
+    </div>
+</div>
+
+<!-- Graphique + Interventions récentes -->
+<div class="row g-3 mb-4">
+    <div class="col-md-5">
+        <div class="stat-card h-100">
+            <div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:16px"><i class="bi bi-pie-chart" style="color:#e63946"></i> État des véhicules</div>
+            <canvas id="vehicleChart" height="180"></canvas>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="table-wrap h-100">
+            <div class="table-hdr">
+                <div class="table-title"><i class="bi bi-clock-history" style="color:#e63946"></i> Dernières interventions</div>
+                <a href="{% url 'list_intervention' %}" class="btn-ghost" style="font-size:12px">Voir tout</a>
+            </div>
+            <table class="dt">
+                <thead><tr><th>Rapport</th><th>Type</th><th>Date</th><th>Durée</th></tr></thead>
+                <tbody>
+                {% for iv in recent_interventions %}
+                <tr>
+                    <td style="color:#fff;font-weight:500">{{ iv.numero_rapport }}</td>
+                    <td>
+                        {% if iv.type_sinistre == "Incendie" %}<span class="s-inter">🔥 Incendie</span>
+                        {% elif iv.type_sinistre == "Accident" %}<span class="s-indispo">🚗 Accident</span>
+                        {% else %}<span class="s-dispo">🏥 Secours</span>{% endif %}
+                    </td>
+                    <td>{{ iv.date_appel|date:"d/m/Y H:i" }}</td>
+                    <td>{{ iv.duree }} min</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" style="text-align:center;color:#555;padding:24px">Aucune intervention</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Alertes matériel -->
+{% if materiels_expires %}
+<div class="stat-card" style="--accent:#ef4444;margin-bottom:16px">
+    <div style="font-size:14px;font-weight:600;color:#ef4444;margin-bottom:12px"><i class="bi bi-exclamation-triangle-fill"></i> Matériel nécessitant une révision</div>
+    <div class="row g-2">
+        {% for m in materiels_expires %}
+        <div class="col-md-4">
+            <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;">
+                <div>
+                    <div style="font-size:13px;font-weight:600;color:#fff">{{ m.nom }}</div>
+                    <div style="font-size:11px;color:#f87171">Révision : {{ m.date_revision }}</div>
+                </div>
+                <span class="s-expired">Urgent</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Actions rapides -->
+<div class="table-wrap">
+    <div class="table-hdr">
+        <div class="table-title"><i class="bi bi-zap" style="color:#e63946"></i> Actions rapides</div>
+    </div>
+    <div style="padding:16px;display:flex;gap:10px;flex-wrap:wrap;">
+        {% if user.is_staff %}
+        <a href="{% url 'add_intervention' %}" class="btn-red"><i class="bi bi-plus-circle"></i> Nouvelle intervention</a>
+        <a href="{% url 'vehicule_add' %}" class="btn-ghost"><i class="bi bi-truck"></i> Ajouter véhicule</a>
+        <a href="{% url 'materiel_add' %}" class="btn-ghost"><i class="bi bi-tools"></i> Ajouter matériel</a>
+        {% endif %}
+        <a href="{% url 'vehicule_list' %}" class="btn-ghost"><i class="bi bi-list-ul"></i> Voir véhicules</a>
+        <a href="{% url 'list_intervention' %}" class="btn-ghost"><i class="bi bi-lightning-charge"></i> Voir interventions</a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+new Chart(document.getElementById('vehicleChart'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Disponibles', 'En intervention', 'Indisponibles'],
+        datasets: [{
+            data: [{{ vehicules_dispo }}, {{ vehicules_inter }}, {{ vehicules_indispo }}],
+            backgroundColor: ['rgba(16,185,129,.7)','rgba(239,68,68,.7)','rgba(245,158,11,.7)'],
+            borderColor: ['#10b981','#ef4444','#f59e0b'],
+            borderWidth: 2,
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { labels: { color: '#9aa0b0', font: { size: 12 } } }
+        },
+        cutout: '65%'
+        //le trou au milieu du graphique
+    }
+});
+</script>
+{% endblock %}

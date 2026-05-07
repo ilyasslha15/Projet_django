@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>➕ Ajouter Véhicule</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-danger">
+            Enregistrer
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

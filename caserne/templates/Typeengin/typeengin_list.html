@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block page_title %}Types d'Engins{% endblock %}
+{% block content %}
+<div class="table-wrap">
+    <div class="table-hdr">
+        <div class="table-title"><i class="bi bi-tags" style="color:#e63946"></i> Types d'Engins</div>
+        {% if user.is_staff %}<a href="/caserne/add_typeengin/" class="btn-red"><i class="bi bi-plus"></i> Ajouter</a>{% endif %}
+        <!--if user.is_staff pour vérifier si l'utilisateur est un administrateur-->
+    </div>
+    <table class="dt">
+        <thead><tr><th>Nom</th><th>Description</th><th>Personnel requis</th><th>Actions</th></tr></thead>
+        <tbody>
+        {% for t in types %}
+        <tr>
+            <td style="font-weight:600;color:#fff">{{ t.nom_type }}</td>
+            <td style="color:#888;max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.description }}</td>
+            <td><span style="background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.25);padding:2px 9px;border-radius:12px;font-size:12px;font-weight:600">{{ t.nb_personnel_requis }} pers.</span></td>
+            <td>
+                {% if user.is_staff %}
+                <a href="/caserne/typeengin_edit/{{ t.id }}/" class="btn-edit"><i class="bi bi-pencil"></i> Modifier</a>
+                <a href="/caserne/delete_add_typeengin/{{ t.id }}/" class="btn-del" onclick="return confirm('Supprimer ce type ?')"><i class="bi bi-trash"></i> Supprimer</a>
+                {% else %}<span style="color:#444;font-size:12px">Lecture seule</span>{% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" style="text-align:center;color:#555;padding:28px">Aucun type trouvé</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
