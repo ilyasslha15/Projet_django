@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 #  ADMIN ONLY
 def admin_only(user):
     return user.is_staff
+# Pour vérifier si l'utilisateur est un administrateur
 
 
 # ==================================================
@@ -47,6 +48,7 @@ def editTypeEngin(request, TypeEngin_id):
         "description": typeengin.description,
         "nb_personnel_requis": typeengin.nb_personnel_requis
     })
+    # si request.method == "POST" exécute ca form = TypeEnginForm(request.POST)
     # Si l'utilisateur a soumis le formulaire (POST) 
     # Si l'utilisateur vient juste d'ouvrir la page (GET)
 
@@ -145,10 +147,12 @@ def deleteVehicule(request, Vehicule_id):
 from django.contrib.auth.decorators import login_required
 
 @login_required
+#Obligation de se connecter
 def list_intervention(request):
     date = request.GET.get('date')
     type_sinistre = request.GET.get('type_sinistre')
     interventions = Intervention.objects.all().order_by('-date_appel')
+    # pour les dates dans du récent vers plus ancien
     if date:
         interventions = interventions.filter(date_appel__date=date)
     if type_sinistre:

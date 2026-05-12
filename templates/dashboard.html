@@ -105,6 +105,7 @@
     </div>
     <div style="padding:16px;display:flex;gap:10px;flex-wrap:wrap;">
         {% if user.is_staff %}
+        <!--Si l'utilisateur est un administrateur-->
         <a href="{% url 'add_intervention' %}" class="btn-red"><i class="bi bi-plus-circle"></i> Nouvelle intervention</a>
         <a href="{% url 'vehicule_add' %}" class="btn-ghost"><i class="bi bi-truck"></i> Ajouter véhicule</a>
         <a href="{% url 'materiel_add' %}" class="btn-ghost"><i class="bi bi-tools"></i> Ajouter matériel</a>
@@ -116,7 +117,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-new Chart(document.getElementById('vehicleChart'), {
+new Chart(document.getElementById('vehicleChart'),{
     type: 'doughnut',
     data: {
         labels: ['Disponibles', 'En intervention', 'Indisponibles'],
@@ -132,6 +133,7 @@ new Chart(document.getElementById('vehicleChart'), {
         plugins: {
             legend: { labels: { color: '#9aa0b0', font: { size: 12 } } }
         },
+        //la légende du graphique.
         cutout: '65%'
         //le trou au milieu du graphique
     }

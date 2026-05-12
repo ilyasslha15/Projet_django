@@ -1,0 +1,15 @@
+
+<div class="container mt-4">
+
+    <h2>Modifier une reclamation</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-danger">
+            Enregistrer
+        </button>
+
+    </form>
+
+</div>

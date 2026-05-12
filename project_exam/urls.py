@@ -16,4 +16,8 @@ urlpatterns = [
     # Quand quelqu’un va sur /login/, utilise la vue LoginView de Django
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('register/', views.register, name='register'),
+    path('reclamation_list/',views.reclamation_list,name='reclamation_list'),
+    path('reclamation_add/',views.reclamation_add,name='reclamation_add'),
+    path('reclamation_delete/<int:reclamation_id>/',views.reclamation_delete,name='reclamation_delete'),
+    path('reclamation_edit/<int:reclamation_id>/',views.reclamation_edit,name='reclamation_edit'),
 ]

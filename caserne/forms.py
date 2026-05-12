@@ -89,8 +89,9 @@ class InterventionForm(forms.Form):
     )
 
     vehicules = forms.ModelMultipleChoiceField(
-        # Permet de sélectionner plusieurs véhicules dans un formulaire
+    # Permet de sélectionner plusieurs véhicules dans un formulaire
     queryset=Vehicule.objects.all(),
+    # Collection des objets
     # “liste de tous les véhicules de la base de données”
     widget=forms.SelectMultiple(attrs={'class': 'form-control'})
 )
@@ -119,3 +120,7 @@ class RegisterForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'password']
+
+
+class reclamation_form(forms.Form):
+    description = forms.CharField(max_length=50)

@@ -1,0 +1,16 @@
+<h2>Listes des réclamations :</h2>
+<table border="1" style="border-collapse: collapse;">
+    <a href="{% url 'reclamation_add' %}">Ajouter une</a>
+    <tr>
+        <th>Id</th>
+        <th>Description</th>
+        <th>Actions</th>
+    </tr>
+    {% for r in reclamations %}
+    <tr>
+        <td>{{r.id}}</td>
+        <td>{{r.description}}</td>
+        <td><a href="{% url 'reclamation_edit' r.id %}">Modifier</a>  <a href="{% url 'reclamation_delete' r.id %}">Supprimer</a></td>
+    </tr>
+    {% endfor %}
+</table>

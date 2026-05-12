@@ -104,3 +104,9 @@ def update_vehicle_status(sender, instance, action, **kwargs):
     if action == "post_remove":
         instance.vehicules.update(statut="Disponible")
 
+
+
+class reclamation(models.Model):
+    description = models.CharField(max_length=50)
+
+
